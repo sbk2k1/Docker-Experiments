@@ -1,0 +1,33 @@
+version: "3"
+services:
+  first_server:
+    build:
+      context: ./first_server
+    depends_on:
+      - sql_server
+    networks:
+      - my_network
+    ports:
+      - 8080:80
+
+  second_server:
+    build:
+      context: ./second_server
+    depends_on:
+      - first_server
+    networks:
+      - my_network
+    ports:
+      - 8081:80
+
+  sql_server:
+    image: mysql:latest
+    volumes:
+      - ./sql_server/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my_network
+    environment:
+      MYSQL_ROOT_PASSWORD: your_password
+
+networks:
+  my_network:
