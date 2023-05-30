@@ -3,26 +3,25 @@ $servername = "sql_server";
 $username = "root";
 $password = "your_password";
 $dbname = "your_database";
+$setName = array(PDO::MYSQL_ATTR_INIT_COMMAND =>'SET NAMES utf8');
 
-// Create a connection
-$conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password, $setName);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Fetch texts from the database
-$sql = "SELECT text FROM your_table";
-$result = $conn->query($sql);
+    // Fetch texts from the database
+    $sql = "SELECT text FROM your_table";
+    $stmt = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo $row["text"] . "<br>";
+    if ($stmt->rowCount() > 0) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo $row["text"] . "<br>";
+        }
+    } else {
+        echo "No texts found.";
     }
-} else {
-    echo "No texts found.";
+} catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
 }
-
-$conn->close();
 ?>

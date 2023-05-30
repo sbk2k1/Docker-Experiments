@@ -22,8 +22,14 @@ services:
 
   sql_server:
     image: mysql:latest
+    command: >
+          bash -c "
+          chmod 644 /etc/mysql/conf.d/*.cnf
+          && /entrypoint.sh mysqld
+          "
     volumes:
       - ./sql_server/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql_server/my.cnf:/etc/mysql/conf.d/my.cnf
     networks:
       - my_network
     environment:

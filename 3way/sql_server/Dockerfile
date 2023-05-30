@@ -1,3 +1,5 @@
 FROM mysql:latest
 
-COPY . /docker-entrypoint-initdb.d/
+COPY ./init.sql /docker-entrypoint-initdb.d/init.sql
+
+COPY ./my.cnf /etc/mysql/conf.d/my.cnf
