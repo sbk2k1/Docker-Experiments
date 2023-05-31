@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  site1:
+    build:
+      context: ./site1
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./site1:/var/www/html
+  site2:
+    build: 
+      context: ./site2
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    volumes:
+      - ./site2:/var/www/html
+  site3:
+    build: 
+      context: ./site3
+      dockerfile: Dockerfile
+    ports:
+      - "8082:80"
+    volumes:
+      - ./site3:/var/www/html
