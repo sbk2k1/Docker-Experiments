@@ -1,28 +1,28 @@
 <?php
 
-$databaseHostname = "db";
-$databaseUsername = "root";
-$databasePassword = "secret";
-$databaseName = "test";
-$databasePort = 8081;
+$servername = "db";
+$username = "root";
+$password = "your_password";
+$dbname = "your_database";
+$setName = array(PDO::MYSQL_ATTR_INIT_COMMAND =>'SET NAMES utf8');
 
-$db = new mysqli($databaseHostname, $databaseUsername, $databasePassword, $databaseName, $databasePort);
-
+$db = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password, $setName);
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['username']) && isset($_POST['password'])) {
-
-// echo the $db variable to see if it is working
-echo $db;
-
 
     if ($db->connect_errno) {
         echo "Error: Failed to connect to MySQL - " . $db->connect_error;
     } else {
-        if ($db->signUp("users", $_POST['fullname'], $_POST['email'], $_POST['username'], $_POST['password'])) {
-            echo "Sign Up Success";
-        } else {
-            echo "Sign up Failed";
-        }
+        // insert new user
+        $sql = "INSERT INTO your_table (fullname, email, username, password) VALUES (:fullname, :email, :username, :password)";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':fullname', $_POST['fullname'], PDO::PARAM_STR);
+        $stmt->bindParam(':email', $_POST['email'], PDO::PARAM_STR);
+        $stmt->bindParam(':username', $_POST['username'], PDO::PARAM_STR);
+        $stmt->bindParam(':password', $_POST['password'], PDO::PARAM_STR);
+        $stmt->execute();
+        echo "Register Success";
     }
 } else {
     echo "All fields are required";

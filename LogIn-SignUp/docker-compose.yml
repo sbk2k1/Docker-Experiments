@@ -4,15 +4,32 @@ services:
     build:
       context: ./App
       dockerfile: Dockerfile
+    depends_on:
+      - db
+    networks:
+      - mynetwork
     ports:
       - 8080:80
-    environment:
-      - DB_HOST=db
-      - DB_PORT=80
 
   db:
     build:
-      context: ./Db
+      context: ./DB
       dockerfile: Dockerfile
+    command: >
+          bash -c "
+          chmod 644 /etc/mysql/conf.d/*.cnf
+          && /entrypoint.sh mysqld
+          "
     ports:
       - 8081:80
+    volumes:
+      - ./DB/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./DB/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: your_password
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

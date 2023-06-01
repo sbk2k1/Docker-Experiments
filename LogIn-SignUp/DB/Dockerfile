@@ -1,4 +1,5 @@
-FROM php:7.0-apache
+FROM mysql:latest
 
-COPY . /var/www/html/
+COPY ./init.sql /docker-entrypoint-initdb.d/init.sql
 
+COPY ./my.cnf /etc/mysql/conf.d/my.cnf
